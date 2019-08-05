@@ -1,7 +1,8 @@
 all: no-opt opt opt-asm
 
 no-opt: src/rsa.c include/rsa.h
-	gcc -std=c99 -Iinclude/ src/rsa.c -o bin/rsa
+	gcc -std=c99 -Iinclude/ src/rsa.c -S -o bin/rsa.S
+	gcc -std=c99 -Iinclude/ bin/rsa.S -o bin/rsa
 
 opt: src/rsa-opt.c include/rsa.h
 	gcc -std=c99 -Iinclude/ src/rsa-opt.c -S -o bin/rsa-opt.S
