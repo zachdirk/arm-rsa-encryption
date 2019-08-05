@@ -11,7 +11,7 @@ int_type D_ = 0x6D65F46A3E84F1;
 
 int_type count_bits(int_type N) 
 {       
-	size_type count = 0;
+	register size_type count = 0;
 	while (N)
 	{
 		count = count + 1;
@@ -22,7 +22,7 @@ int_type count_bits(int_type N)
 
 int_type integer_power(int_type B, int_type E, int_type M)
 {
-	int_type result = 1;
+	register int_type result = 1;
 	for (int i = 0; i < E; i++)
 	{
 		result = result * B % M;
@@ -30,14 +30,16 @@ int_type integer_power(int_type B, int_type E, int_type M)
 	return result;
 }
 
-int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M, size_type m)
+int_type montgomery_modular_multiplication(int_type X, register int_type Y, int_type M, register size_type m)
 {
-	int_type Z = 0;
+	register int_type Z = 0;
 	int_type Y_0 = Y & 1;
+	register int_type X_i = 0;
+	register int_type Z_n = 0;
 	for (int i = 0; i < m; i++)
 	{
-		int_type X_i = (X >> i) & 1;
-		int_type Z_n = (Z & 1) ^ (X_i & Y_0);
+		X_i = (X >> i) & 1;
+		Z_n = (Z & 1) ^ (X_i & Y_0);
 		Z = (Z + X_i*Y + Z_n * M) >> 1;
 	}
 	if (Z >= M)
@@ -47,9 +49,9 @@ int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M, s
 
 int_type modular_exponentiation(int_type X, int_type E, int_type M, size_type m)
 {
-	int_type Rsq = integer_power(2, m*2, M);
-	int_type Z = montgomery_modular_multiplication(1, Rsq, M, m);
-	int_type P = montgomery_modular_multiplication(X, Rsq, M, m);
+	register int_type Rsq = integer_power(2, m*2, M);
+	register int_type Z = montgomery_modular_multiplication(1, Rsq, M, m);
+	register int_type P = montgomery_modular_multiplication(X, Rsq, M, m);
 	for (int i = 0; i < m; i++)
 	{
 		

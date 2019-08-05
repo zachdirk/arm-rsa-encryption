@@ -34,10 +34,12 @@ int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M, s
 {
 	int_type Z = 0;
 	int_type Y_0 = Y & 1;
+	int_type X_i = 0;
+	int_type Z_n = 0;
 	for (int i = 0; i < m; i++)
 	{
-		int_type X_i = (X >> i) & 1;
-		int_type Z_n = (Z & 1) ^ (X_i & Y_0);
+		X_i = (X >> i) & 1;
+		Z_n = (Z & 1) ^ (X_i & Y_0);
 		Z = (Z + X_i*Y + Z_n * M) >> 1;
 	}
 	if (Z >= M)
