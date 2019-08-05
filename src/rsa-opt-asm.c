@@ -16,7 +16,6 @@ int_type count_bits(int_type N)
 	{
 		count = count + 1;
 		N = N>>1;
-
 	}
 	return count;
 }
@@ -31,14 +30,13 @@ int_type integer_power(int_type B, int_type E, int_type M)
 	return result;
 }
 
-int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M)
+int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M, size_type m)
 {
-	size_type m = count_bits(M);
 	int_type Z = 0;
+	int_type Y_0 = Y & 1;
 	for (int i = 0; i < m; i++)
 	{
 		int_type X_i = (X >> i) & 1;
-		int_type Y_0 = Y & 1;
 		int_type Z_n = (Z & 1) ^ (X_i & Y_0);
 		Z = (Z + X_i*Y + Z_n * M) >> 1;
 	}
@@ -47,20 +45,19 @@ int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M)
 	return Z;
 }
 
-int_type modular_exponentiation(int_type X, int_type E, int_type M)
+int_type modular_exponentiation(int_type X, int_type E, int_type M, size_type m)
 {
-	size_type m = count_bits(M);
 	int_type Rsq = integer_power(2, m*2, M);
-	int_type Z = montgomery_modular_multiplication(1, Rsq, M);
-	int_type P = montgomery_modular_multiplication(X, Rsq, M);
+	int_type Z = montgomery_modular_multiplication(1, Rsq, M, m);
+	int_type P = montgomery_modular_multiplication(X, Rsq, M, m);
 	for (int i = 0; i < m; i++)
 	{
 		
 		if ((E >> i) & 1)
-			Z = montgomery_modular_multiplication(Z, P, M);
-		P = montgomery_modular_multiplication(P, P, M);
+			Z = montgomery_modular_multiplication(Z, P, M, m);
+		P = montgomery_modular_multiplication(P, P, M, m);
 	}
-	return montgomery_modular_multiplication(1, Z, M);
+	return montgomery_modular_multiplication(1, Z, M, m);
 }
 #ifdef DEBUG
 void test_function()
@@ -94,18 +91,18 @@ void test_function()
 
 int_type encrypt(int_type P)
 {
-	return modular_exponentiation(P, E_, M_);
+	return modular_exponentiation(P, E_, M_, count_bits(M_));
 }
 
 int_type decrypt(int_type C)
 {
-	return modular_exponentiation(C, D_, M_);
+	return modular_exponentiation(C, D_, M_, count_bits(M_));
 }
 
 void profile()
 {
 	srand(0);
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		int_type msg = rand();
 		int_type c = encrypt(msg);
