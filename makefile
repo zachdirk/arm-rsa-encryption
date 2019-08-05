@@ -1,10 +1,15 @@
-gcc: src/rsa.c include/rsa.h
-	gcc -std=c99 -Iinclude/ src/rsa.c -lm -o bin/rsa
+all: no-opt opt opt-asm
 
-arm: src/rsa.c include/rsa.h
-	cp src/rsa.c /tmp/rsa.c
-	cp include/rsa.h /tmp/rsa.h
-	cd /tmp/; arm-linux-gcc -std=c99 -lm -static -o ~/SENG440/rsa/bin/rsa.exe rsa.c
+no-opt: src/rsa.c include/rsa.h
+	gcc -std=c99 -Iinclude/ src/rsa.c -o bin/rsa
+
+opt: src/rsa-opt.c include/rsa.h
+	gcc -std=c99 -Iinclude/ src/rsa-opt.c -S -o bin/rsa-opt.S
+	gcc -std=c99 -Iinclude/ bin/rsa-opt.S -o bin/rsa-opt
+
+opt-asm: src/rsa-opt-asm.c include/rsa.h
+	gcc -std=c99 -Iinclude/ src/rsa-opt-asm.c -S -o bin/rsa-opt-asm.S
+	gcc -std=c99 -Iinclude/ bin/rsa-opt-asm.S -o bin/rsa-opt-asm
 
 clean: 
 	rm bin/*
