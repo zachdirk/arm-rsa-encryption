@@ -1,6 +1,7 @@
 #include <stdint.h>
 #define int_type uint64_t
-#define size_type size_t
+#define size_type unsigned int
+#define bit_type unsigned int
 
 int_type count_bits(int_type number);
 int_type integer_power(int_type B, int_type E, int_type M);
