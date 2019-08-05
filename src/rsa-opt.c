@@ -31,35 +31,36 @@ int_type integer_power(int_type B, int_type E, int_type M)
 	return result;
 }
 
-int_type montgomery_modular_multiplication(int_type X, register int_type Y, int_type M, register size_type m)
+int_type montgomery_modular_multiplication(int_type X, register int_type Y, register int_type M, register size_type m)
 {
 	register int_type Z = 0;
-	bit_type Y_0 = Y & 1;
+	register bit_type Y_0 = Y & 1;
 	register bit_type X_i = 0;
 	register bit_type Z_n = 0;
-	for (size_type i = 0; i < m; i++)
+	while(m)
 	{
 		X_i = X & 1;
 		Z_n = (Z & 1) ^ (X_i & Y_0);
 		Z = (Z + X_i*Y + Z_n * M) >> 1;
 		X = X >> 1;
+		--m;
 	}
 	if (Z >= M)
 		Z = Z - M;
 	return Z;
 }
 
-int_type modular_exponentiation(int_type X, int_type E, int_type M, size_type m)
+int_type modular_exponentiation(register int_type X, register int_type E, register int_type M, register size_type m)
 {
 	register int_type Rsq = integer_power(2, m*2, M);
 	register int_type Z = montgomery_modular_multiplication(1, Rsq, M, m);
 	register int_type P = montgomery_modular_multiplication(X, Rsq, M, m);
-	for (size_type i = 0; i < m; i++)
+	while (E)
 	{
-		
-		if ((E >> i) & 1)
+		if (E & 1)
 			Z = montgomery_modular_multiplication(Z, P, M, m);
 		P = montgomery_modular_multiplication(P, P, M, m);
+		E = E >> 1;
 	}
 	return montgomery_modular_multiplication(1, Z, M, m);
 }
