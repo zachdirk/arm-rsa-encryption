@@ -9,24 +9,24 @@ int_type E_ = 0x10001;
 int_type D_ = 0x6D65F46A3E84F1;
 
 
-int_type count_bits(int_type number) 
+int_type count_bits(int_type N) 
 {       
 	size_type count = 0;
-	while (number)
+	while (N)
 	{
 		count = count + 1;
-		number = number>>1;
+		N = N>>1;
 
 	}
 	return count;
 }
 
-int_type integer_power(int_type base, int_type exp, int_type m)
+int_type integer_power(int_type B, int_type E, int_type M)
 {
 	int_type result = 1;
-	for (int i = 0; i < exp; i++)
+	for (int i = 0; i < E; i++)
 	{
-		result = result * base % m;
+		result = result * B % M;
 	}
 	return result;
 }
@@ -44,16 +44,6 @@ int_type montgomery_modular_multiplication(int_type X, int_type Y, int_type M)
 	}
 	if (Z >= M)
 		Z = Z - M;
-	return Z;
-}
-
-int_type modular_multiplication(int_type X, int_type Y, int_type M)
-{
-	int_type Rsq = integer_power(2, count_bits(M)*2, M);
-	int_type Xbar = montgomery_modular_multiplication(X, Rsq, M);
-	int_type Ybar = montgomery_modular_multiplication(Y, Rsq, M);
-	int_type Zbar = montgomery_modular_multiplication(Xbar, Ybar, M);
-	int_type Z = montgomery_modular_multiplication(Zbar, 1, M);
 	return Z;
 }
 
@@ -102,14 +92,14 @@ void test_function()
 }
 #endif
 
-int_type encrypt(int_type p)
+int_type encrypt(int_type P)
 {
-	return modular_exponentiation(p, E_, M_);
+	return modular_exponentiation(P, E_, M_);
 }
 
-int_type decrypt(int_type c)
+int_type decrypt(int_type C)
 {
-	return modular_exponentiation(c, D_, M_);
+	return modular_exponentiation(C, D_, M_);
 }
 
 void profile()
