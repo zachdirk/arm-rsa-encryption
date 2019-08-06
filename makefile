@@ -1,4 +1,4 @@
-all: gcc no-gcc
+all: gcc no-gcc 
 
 gcc: gcc-no-opt gcc-opt
 
@@ -20,6 +20,9 @@ gcc-opt: src/rsa-opt.c include/rsa.h
 
 opt-asm: src/rsa-opt-asm.S include/rsa.h
 	gcc -std=c99 -Iinclude/ src/rsa-opt-asm.S -o bin/rsa-opt-asm
+
+hardware: src/mmm.v src/mmm_tb.v
+    iverilog -o mmm bin/mmm_tb.v
 
 clean: 
 	rm bin/*
